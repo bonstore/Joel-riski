@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Toko Joel And Riski</title>
+  <style>
+    body {
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+
+    header {
+      background-color: #2196F3
+;
+      color: white;
+      padding: 20px 0;
+      font-size: 30px;
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      text-align: center;
+    }
+
+    .sub-header {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      color: white;
+      margin-top: -20px;
+      margin-bottom: 15px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .tab-button {
+      background-color: #2196F3;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      margin: 5px 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tab-button.active {
+      background-color: white;
+      color: #2196F3;
+      border: 2px solid #2196F3;
+    }
+
+    .diamond-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      justify-content: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .diamond-card {
+      position: relative;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      width: 40%;
+      height: 10vh;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 150px;
+      min-height: 60px;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .diamond-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .diamond-top span {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .diamond-top img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .price-tag {
+      position: absolute;
+      background-color: #2196F3;
+      color: white;
+      padding: 1px 15px;
+      border-top-left-radius: 8px;
+      font-size: 12px;
+      bottom: 1px;
+      right: 1px;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fade-in 0.6s ease forwards;
+    }
+
+    .panduan-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 50px auto 20px;
+    }
+
+    /* === POP-UP PANDUAN === */
+    .popup-panduan {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .popup-box {
+      background: white;
+      max-width: 90%;
+      width: 320px;
+      margin: 100px auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      position: relative;
+      text-align: left;
+      animation: fade-in 0.3s ease;
+    }
+
+    .popup-box h3 {
+      margin-top: 0;
+      color: #2196F3;
+      font-size: 18px;
+    }
+
+    .popup-box p {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #888;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .diamond-card {
+        width: 90px;
+        height: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>TOKO JOEL RISKI</header>
+  <div class="sub-header">TOKO KEBUTUHAN SOSMED & APP PREMIUM TERMURAH</div>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="filterKategori('tiktok')">TIK TOK</button>
+    <button class="tab-button" onclick="filterKategori('whatsapp')">WHATSAPP</button>
+    <button class="tab-button" onclick="filterKategori('instagram')">INSTAGRAM</button>
+    <button class="tab-button" onclick="filterKategori('facebook')">FACEBOOK</button>
+    <button class="tab-button" onclick="filterKategori('youtube')">YOUTUBE</button>
+    <button class="tab-button" onclick="filterKategori('premium')">APP PREM</button>
+  </div>
+
+  <div class="diamond-list" id="product-list"></div>
+
+  <!-- Tombol Panduan di bagian paling bawah -->
+  <div class="panduan-wrapper">
+    <button onclick="bukaPanduan()" style="background:#2196F3; color:white; padding:10px 25px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+      ⚠️INFOMASI⚠️
+    </button>
+  </div>
+
+  <!-- Pop-up Panduan -->
+  <div class="popup-panduan" id="popupPanduan">
+    <div class="popup-box">
+      <span class="close-btn" onclick="tutupPanduan()">&times;</span>
+      <h3>Informasi Penting</h3>
+      <p>
+        1.website ini hanya untuk informasi list produk dari Bonskuy Store.<br>
+        2.Jika ingin order silakan hub: 0851-4131-6926.<br>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const produk = [
+      // FOLLOWERS TIKTOK
+      { nama: '100 Followers Global (Fast & Garansi 30 hari)', harga: 6000, kategori: 'tiktok' },
+      { nama: '200 Followers Global (Fast & Garansi 30 hari)', harga: 12000, kategori: 'tiktok' },
+      { nama: '300 Followers Global (Fast & Garansi 30 hari)', harga: 18000, kategori: 'tiktok' },
+      { nama: '400 Followers Global (Fast & Garansi 30 hari)', harga: 24000, kategori: 'tiktok' },
+      { nama: '500 Followers Global (Fast & Garansi 30 hari)', harga: 30000, kategori: 'tiktok' },
+      { nama: '600 Followers Global (Fast & Garansi 30 hari)', harga: 36000, kategori: 'tiktok' },
+      { nama: '700 Followers Global (Fast & Garansi 30 hari)', harga: 42000, kategori: 'tiktok' },
+      { nama: '800 Followers Global (Fast & Garansi 30 hari)', harga: 48000, kategori: 'tiktok' },
+      { nama: '900 Followers Global (Fast & Garansi 30 hari)', harga: 54000, kategori: 'tiktok' },
+      { nama: '1.000 Followers Global (Fast & Garansi 30 hari)', harga: 60000, kategori: 'tiktok' },
+      //LIKE TIKTOK
+      { nama: '100 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 1000, kategori: 'tiktok' },
+      { nama: '200 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 2000, kategori: 'tiktok' },
+      { nama: '300 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 3000, kategori: 'tiktok' },
+      { nama: '400 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 4000, kategori: 'tiktok' },
+      { nama: '500 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 5000, kategori: 'tiktok' },
+      { nama: '600 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 6000, kategori: 'tiktok' },
+     { nama: '700 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 7000, kategori: 'tiktok' },
+     { nama: '800 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 8000, kategori: 'tiktok' },
+     { nama: '900 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 9000, kategori: 'tiktok' },
+     { nama: '1.000 Like Global Fast (Drop rate 1% & Garansi 30hari)', harga: 10000, kategori: 'tiktok' },
+     //VIEWS TIKTOK
+     { nama: '10.000 View (Fast & Non Drop)', harga: 5000, kategori: 'tiktok' },
+     { nama: '20.000 View (Fast & Non Drop)', harga: 10000, kategori: 'tiktok' },
+     { nama: '30.000 View (Fast & Non Drop)', harga: 15000, kategori: 'tiktok' },
+     { nama: '40.000 View (Fast & Non Drop)', harga: 20000, kategori: 'tiktok' },
+     { nama: '50.000 View (Fast & Non Drop)', harga: 25000, kategori: 'tiktok' },
+     { nama: '60.000 View (Fast & Non Drop)', harga: 30000, kategori: 'tiktok' },
+     { nama: '70.000 View (Fast & Non Drop)', harga: 35000, kategori: 'tiktok' },
+     { nama: '80.000 View (Fast & Non Drop)', harga: 40000, kategori: 'tiktok' },
+     { nama: '90.000 View (Fast & Non Drop)', harga: 45000, kategori: 'tiktok' },
+     { nama: '100.000 View (Fast & Non Drop)', harga: 50000, kategori: 'tiktok' },
+
+      // WhatsApp
+      { nama: '100 Followers', harga: 5000, kategori: 'whatsapp' },
+      { nama: '200 Followers', harga: 10000, kategori: 'whatsapp' },
+      { nama: '300 Followers', harga: 15000, kategori: 'whatsapp' },
+      { nama: '400 Followers', harga: 20000, kategori: 'whatsapp' },
+      { nama: '500 Followers', harga: 25000, kategori: 'whatsapp' },
+      { nama: '600 Followers', harga: 30000, kategori: 'whatsapp' },
+      { nama: '700 Followers', harga: 35000, kategori: 'whatsapp' },
+      { nama: '800 Followers', harga: 40000, kategori: 'whatsapp' },
+      { nama: '900 Followers', harga: 45000, kategori: 'whatsapp' },
+      { nama: '1000 Followers', harga: 50000, kategori: 'whatsapp' },
+      //NOKOS WhatsApp
+      { nama: '1 Nokos Indonesia', harga: 5000, kategori: 'whatsapp' },
+      { nama: '1 Nokos Filipina', harga: 6000, kategori: 'whatsapp' },
+      { nama: '1 Nokos Ukraina', harga: 20000, kategori: 'whatsapp' },
+      { nama: '1 Nokos thailand', harga: 15000, kategori: 'whatsapp' },
+      { nama: '1 Nokos Hongkong', harga: 20000, kategori: 'whatsapp' },
+
+      // Instagram
+      { nama: '100 Followers Indonesia (Fast & Garansi 30 hari)', harga: 5000, kategori: 'instagram' },
+      { nama: '200 Followers Indonesia (Fast & Garansi 30 hari)', harga: 10000, kategori: 'instagram' },
+      { nama: '300 Followers Indonesia (Fast & Garansi 30 hari)', harga: 15000, kategori: 'instagram' },
+      { nama: '400 Followers Indonesia (Fast & Garansi 30 hari)', harga: 20000, kategori: 'instagram' },
+      { nama: '500 Followers Indonesia (Fast & Garansi 30 hari)', harga: 25000, kategori: 'instagram' },
+      { nama: '600 Followers Indonesia (Fast & Garansi 30 hari)', harga: 30000, kategori: 'instagram' },
+      { nama: '700 Followers Indonesia (Fast & Garansi 30 hari)', harga: 35000, kategori: 'instagram' },
+      { nama: '800 Followers Indonesia (Fast & Garansi 30 hari)', harga: 40000, kategori: 'instagram' },
+      { nama: '900 Followers Indonesia (Fast & Garansi 30 hari)', harga: 45000, kategori: 'instagram' },
+      { nama: '1000 Followers Indonesia (Fast & Garansi 30 hari)', harga: 50000, kategori: 'instagram' },
+      //LIKE INSTAGRAM
+      { nama: '100 Like (Fast & HQ)', harga: 1000, kategori: 'instagram' },
+      { nama: '200 Like (Fast & HQ)', harga: 2000, kategori: 'instagram' },
+      { nama: '300 Like (Fast & HQ)', harga: 3000, kategori: 'instagram' },
+      { nama: '400 Like (Fast & HQ)', harga: 4000, kategori: 'instagram' },
+      { nama: '500 Like (Fast & HQ)', harga: 5000, kategori: 'instagram' },
+      { nama: '600 Like (Fast & HQ)', harga: 6000, kategori: 'instagram' },
+      { nama: '700 Like (Fast & HQ)', harga: 7000, kategori: 'instagram' },
+      { nama: '800 Like (Fast & HQ)', harga: 8000, kategori: 'instagram' },
+      { nama: '900 Like (Fast & HQ)', harga: 9000, kategori: 'instagram' },
+      { nama: '1000 Like (Fast & HQ)', harga: 10000, kategori: 'instagram' },
+       //FOLLOWERS FACEBOOK
+      { nama: '100 Follwers Facebook (Non Drop)', harga: 3000, kategori: 'facebook' },
+      { nama: '200 Follwers Facebook (Non Drop)', harga: 6000, kategori: 'facebook' },
+      { nama: '300 Follwers Facebook (Non Drop)', harga: 9000, kategori: 'facebook' },
+      { nama: '400 Follwers Facebook (Non Drop)', harga: 12000, kategori: 'facebook' },
+      { nama: '500 Follwers Facebook (Non Drop)', harga: 15000, kategori: 'facebook' },
+      { nama: '600 Follwers Facebook (Non Drop)', harga: 18000, kategori: 'facebook' },
+      { nama: '700 Follwers Facebook (Non Drop)', harga: 21000, kategori: 'facebook' },
+      { nama: '800 Follwers Facebook (Non Drop)', harga: 24000, kategori: 'facebook' },
+      { nama: '900 Follwers Facebook (Non Drop)', harga: 27000, kategori: 'facebook' },
+      { nama: '1000 Follwers Facebook (Non Drop)', harga: 30000, kategori: 'facebook' },
+       //LIKE FACEBOOK
+      { nama: '100 Like Facebook (Garansi 30 hari)', harga: 2000, kategori: 'facebook' },
+      { nama: '200 Like Facebook (Garansi 30 hari)', harga: 4000, kategori: 'facebook' },
+      { nama: '300 Like Facebook (Garansi 30 hari)', harga: 6000, kategori: 'facebook' },
+      { nama: '400 Like Facebook (Garansi 30 hari)', harga: 8000, kategori: 'facebook' },
+      { nama: '500 Like Facebook (Garansi 30 hari)', harga: 10000, kategori: 'facebook' },
+      { nama: '600 Like Facebook (Garansi 30 hari)', harga: 12000, kategori: 'facebook' },
+      { nama: '700 Like Facebook (Garansi 30 hari)', harga: 14000, kategori: 'facebook' },
+      { nama: '800 Like Facebook (Garansi 30 hari)', harga: 16000, kategori: 'facebook' },
+      { nama: '900 Like Facebook (Garansi 30 hari)', harga: 18000, kategori: 'facebook' },
+      { nama: '1000 Like Facebook (Garansi 30 hari)', harga: 20000, kategori: 'facebook' },
+      //KOMEN FACEBOOK
+      { nama: '10 Komen Facebook Indonesia (Custom Komen)', harga: 10000, kategori: 'facebook' },
+      { nama: '20 Komen Facebook Indonesia (Custom Komen)', harga: 20000, kategori: 'facebook' },
+      { nama: '30 Komen Facebook Indonesia (Custom Komen)', harga: 30000, kategori: 'facebook' },
+      { nama: '40 Komen Facebook Indonesia (Custom Komen)', harga: 40000, kategori: 'facebook' },
+      { nama: '50 Komen Facebook Indonesia (Custom Komen)', harga: 50000, kategori: 'facebook' },
+      { nama: '60 Komen Facebook Indonesia (Custom Komen)', harga: 60000, kategori: 'facebook' },
+      
+      //SUBSCRIBE YOUTUBE
+      { nama: '100 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 5000, kategori: 'youtube' },
+      { nama: '200 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 10000, kategori: 'youtube' },
+      { nama: '300 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 15000, kategori: 'youtube' },
+      { nama: '400 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 20000, kategori: 'youtube' },
+      { nama: '500 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 25000, kategori: 'youtube' },
+      { nama: '600 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 30000, kategori: 'youtube' },
+      { nama: '700 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 35000, kategori: 'youtube' },
+      { nama: '800 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 40000, kategori: 'youtube' },
+      { nama: '900 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 45000, kategori: 'youtube' },
+      { nama: '1000 Subcribe Youtube G9 (Low Drop & Bergaransi)', harga: 50000, kategori: 'youtube' },
+        //LIKE YOUTUBE
+      { nama: '100 Like Youtube (Low Drop & Garansi 30 hari)', harga: 2000, kategori: 'youtube' },
+      { nama: '200 Like Youtube (Low Drop & Garansi 30 hari)', harga: 4000, kategori: 'youtube' },
+      { nama: '300 Like Youtube (Low Drop & Garansi 30 hari)', harga: 6000, kategori: 'youtube' },
+      { nama: '400 Like Youtube (Low Drop & Garansi 30 hari)', harga: 8000, kategori: 'youtube' },
+      { nama: '500 Like Youtube (Low Drop & Garansi 30 hari)', harga: 10000, kategori: 'youtube' },
+      { nama: '600 Like Youtube (Low Drop & Garansi 30 hari)', harga: 12000, kategori: 'youtube' },
+      { nama: '700 Like Youtube (Low Drop & Garansi 30 hari)', harga: 14000, kategori: 'youtube' },
+      { nama: '800 Like Youtube (Low Drop & Garansi 30 hari)', harga: 16000, kategori: 'youtube' },
+      { nama: '900 Like Youtube (Low Drop & Garansi 30 hari)', harga: 18000, kategori: 'youtube' },
+      { nama: '1000 Like Youtube (Low Drop & Garansi 30 hari)', harga: 20000, kategori: 'youtube' },
+      
+            //app prem
+      { nama: '1 Bulan Youtube Prem Via Invite', harga: 3000, kategori: 'premium' },
+      { nama: '2 Bulan Youtube Prem Via Invite', harga: 6000, kategori: 'premium' },
+      { nama: '3 Bulan Canva Pro Prem Via Invite', harga: 6000, kategori: 'premium' },
+      { nama: '1 Tahun Canva Pro Prem Via Invite', harga: 12000, kategori: 'premium' },
+      { nama: '1 Bulan Fulgar CapCut Pro Prem', harga: 17000, kategori: 'premium' },
+      { nama: '12 Bulan VIU Prem Private', harga: 10000, kategori: 'premium' },
+      { nama: '1 Bulan Alight motion Private', harga: 10000, kategori: 'premium' },
+    ];
+
+    const iconKategori = {
+      tiktok: 'https://cdn-icons-png.flaticon.com/512/3046/3046121.png',
+      whatsapp: 'https://cdn-icons-png.flaticon.com/512/733/733585.png',
+      instagram: 'https://cdn-icons-png.flaticon.com/512/2111/2111463.png',
+      facebook: 'https://cdn-icons-png.flaticon.com/512/733/733547.png',
+      youtube: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png',
+      premium: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png'
+    };
+
+    const container = document.getElementById('product-list');
+
+    function tampilkanProduk(kategori) {
+      container.innerHTML = '';
+      const icon = iconKategori[kategori];
+
+      produk
+  .filter(p => p.kategori === kategori)
+  .forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'diamond-card fade-in';
+    card.style.animationDelay = `${i * 80}ms`;
+
+    card.innerHTML = `
+      <div class="diamond-top">
+        <span>${p.nama}</span>
+        <img src="${icon}" alt="${p.kategori}" />
+      </div>
+      <div class="price-tag">Rp ${p.harga.toLocaleString('id-ID')}</div>
+    `;
+
+    // ➕ Tambahkan aksi klik untuk buka checkout.html
+    card.onclick = () => {
+  localStorage.setItem('produkDipilih', JSON.stringify(p));
+  window.location.href = 'checkout.html';
+};
+
+
+    container.appendChild(card);
+  });
+
+    }
+
+    function filterKategori(kategori) {
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        if (btn.getAttribute('onclick').includes(kategori)) {
+          btn.classList.add('active');
+        }
+      });
+      tampilkanProduk(kategori);
+    }
+
+    function bukaPanduan() {
+      document.getElementById("popupPanduan").style.display = "block";
+    }
+
+    function tutupPanduan() {
+      document.getElementById("popupPanduan").style.display = "none";
+    }
+
+    tampilkanProduk('tiktok');
+  </script>
+
+</body>
+</html>
